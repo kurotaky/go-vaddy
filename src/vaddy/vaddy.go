@@ -221,6 +221,7 @@ func checkScanResult(auth_key string, user string, fqdn string, scan_id string, 
 			os.Exit(ERROR_EXIT)
 		} else {
 			fmt.Println("Scan Success. No vulnerabilities!")
+            postSlackcompleteNotice(fqdn, scan_id, scan_result)
 			os.Exit(SUCCESS_EXIT)
 		}
 	}
@@ -331,6 +332,15 @@ func postSlackIncompleteNotice(fqdn string, scanID string, scanResult ScanResult
 	text += "Result URL: " + scanResult.ScanResultUrl
 
 	postSlack(title, text)
+}
+
+func postSlackcompleteNotice(fqdn string, scanID string, scanResult ScanResult) {
+    title := fmt.Sprintf("Notice: VAddy Scan was complete! (%d%%).\n", scanResult.Complete)
+    text := "Server: " + fqdn + "\n"
+    text += "Scan ID: " + scanID + "\n"
+    text += "Result URL: " + scanResult.ScanResultUrl
+
+    postSlack(title, text)
 }
 
 func postSlack(title, text string) {
